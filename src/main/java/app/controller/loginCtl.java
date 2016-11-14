@@ -9,8 +9,13 @@ import io.github.zuston.framework.annotation.controller;
 @controller
 public class loginCtl {
 
-    @action("post:/hello")
+    @action("get:/favicon.ico")
     public void hello(){
         System.out.println("hello world");
+    }
+
+    @action("get:/pull")
+    public void pull(){
+        System.out.println("get pull");
     }
 }

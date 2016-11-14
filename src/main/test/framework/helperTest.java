@@ -6,16 +6,17 @@ import io.github.zuston.framework.helper.classHelper;
 import io.github.zuston.framework.helper.configHelper;
 import io.github.zuston.framework.helper.coreHelper;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Handler;
 
 /**
  * Created by zuston on 16/11/14.
  */
 public class helperTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         Class [] all = {classHelper.class,
                         configHelper.class,
                         coreHelper.class,
@@ -36,9 +37,18 @@ public class helperTest {
         while (i.hasNext()){
             Map.Entry mp = (Map.Entry) i.next();
             requestEntity req = (requestEntity) mp.getKey();
-            System.out.println(req.getRequestMethod());
+            System.out.println(req.hashCode());
+            System.out.println(req.getRequestMethod()+":"+req.getRequestUrl());
+            handlerEntity handler = hs.get(req);
 
+            Class handlerClass = handler.getHandlerClass();
+            Method handleMethod = handler.getHandlerMethod();
+            Object instance = handlerClass.newInstance();
+            handleMethod.invoke(instance);
         }
+
+        requestEntity r = new requestEntity("get","/pull");
+        System.out.println(r.hashCode());
 
     }
 }

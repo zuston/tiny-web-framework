@@ -17,10 +17,15 @@ public class handlerEntity {
         this.handlerClass = handlerClass;
     }
 
+    public Method getHandlerMethod() {
+        return handlerMethod;
+    }
+
     public handlerEntity(Class<?> handlerClass, Method handlerMethod) {
 
         this.handlerClass = handlerClass;
         this.handlerMethod = handlerMethod;
+
     }
 
     public handlerEntity(Class<?> handlerClass) {
