@@ -2,6 +2,10 @@ package app.controller;
 
 import io.github.zuston.framework.annotation.action;
 import io.github.zuston.framework.annotation.controller;
+import io.github.zuston.framework.entity.viewEntity;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 /**
  * Created by zuston on 16/11/13.
@@ -10,12 +14,13 @@ import io.github.zuston.framework.annotation.controller;
 public class loginCtl {
 
     @action("get:/favicon.ico")
-    public void hello(){
+    public void hello(HashMap<String,Object> hs){
         System.out.println("hello world");
     }
 
     @action("get:/pull")
-    public void pull(){
-        System.out.println("get pull");
+    public viewEntity pull(HashMap<String,Object> hs){
+        HashMap<String,Object> h = new HashMap<String, Object>();
+        return new viewEntity("index.jsp");
     }
 }
