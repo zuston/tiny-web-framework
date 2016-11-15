@@ -4,8 +4,6 @@ import io.github.zuston.framework.core.container;
 import io.github.zuston.framework.entity.handlerEntity;
 import io.github.zuston.framework.entity.requestEntity;
 import io.github.zuston.framework.entity.viewEntity;
-import io.github.zuston.framework.helper.classHelper;
-import io.github.zuston.framework.helper.configHelper;
 import io.github.zuston.framework.helper.coreHelper;
 
 import javax.servlet.ServletException;
@@ -13,14 +11,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by zuston on 16/11/13.
@@ -38,7 +31,7 @@ public class distrubuteServlet extends HttpServlet {
     }
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/view/index.jsp").forward(req,resp);
+        System.out.println("hello zuston");
         String requestMethod = req.getMethod().toLowerCase();
         String requestUrlPattern = req.getRequestURI().toLowerCase();
         handlerEntity handler = coreHelper.getHandler(new requestEntity(requestMethod,requestUrlPattern));
@@ -51,7 +44,7 @@ public class distrubuteServlet extends HttpServlet {
                 HashMap<String,Object> pageHM = view.getModel();
                 String viewName = view.getView();
                 System.out.println(viewName);
-                req.getRequestDispatcher("/index.jsp").forward(req,resp);
+//                req.getRequestDispatcher("/index.jsp").forward(req,resp);
             }else{
                 // TODO: 16/11/14
             }
