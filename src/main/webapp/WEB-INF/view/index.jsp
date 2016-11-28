@@ -12,7 +12,7 @@
 </head>
 <body>
 <h4>hello index.jsp</h4>
-<h1><%=request.getParameter("a")%></h1>
+<h1><%=request.getAttribute("name")%></h1>
 <h1><%=request.getMethod()%></h1>
 
 </body>

@@ -28,7 +28,7 @@ public class bootstrap {
         }
     }
 
-    public static Object reflection(Class oneClass, Method method,HashMap<String,Object> hs){
+    public static Object reflection(Class oneClass, Method method, HashMap<String,Object> hs){
         Object result = null;
         try {
             Object instance = oneClass.newInstance();

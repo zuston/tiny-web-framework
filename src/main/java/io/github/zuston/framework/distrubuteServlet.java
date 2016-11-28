@@ -2,6 +2,7 @@ package io.github.zuston.framework;
 
 import io.github.zuston.framework.core.container;
 import io.github.zuston.framework.entity.handlerEntity;
+import io.github.zuston.framework.entity.jsonEntity;
 import io.github.zuston.framework.entity.requestEntity;
 import io.github.zuston.framework.entity.viewEntity;
 import io.github.zuston.framework.helper.configHelper;
@@ -15,9 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -45,7 +44,7 @@ public class distrubuteServlet extends HttpServlet {
         if(handler!=null){
             Class handlerClass = handler.getHandlerClass();
             Method handlerMethod = handler.getHandlerMethod();
-            Object res = bootstrap.reflection(handlerClass,handlerMethod, container.getAllParam(req));
+            Object res = bootstrap.reflection(handlerClass,handlerMethod,container.getAllParam(req));
 
             if(res.getClass()==viewEntity.class){
                 viewEntity view = (viewEntity)res;
@@ -55,8 +54,10 @@ public class distrubuteServlet extends HttpServlet {
                 req.getRequestDispatcher(viewPath+viewName).forward(req,resp);
             }
 
-
-
+            if(res.getClass()==jsonEntity.class){
+                // TODO: 16-11-28 增加json数据的处理
+                req.getRequestDispatcher(viewPath+defaultJSP).forward(req,resp);
+            }
         }else{
             req.getRequestDispatcher(viewPath+defaultJSP).forward(req,resp);
         }

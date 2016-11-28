@@ -1,11 +1,9 @@
 package app.controller;
 
-import app.service.loginService;
 import io.github.zuston.framework.annotation.action;
 import io.github.zuston.framework.annotation.controller;
 import io.github.zuston.framework.entity.viewEntity;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 /**
@@ -20,4 +18,11 @@ public class loginCtl {
         ve.addModel("name","zuston");
         return new viewEntity("index.jsp").addModel("name","zuston");
     }
+
+    @action("post:/login")
+    public viewEntity loginPost(HashMap<String,Object> hs){
+        return new viewEntity("index.jsp").addModel("a","zuston");
+    }
+
+
 }

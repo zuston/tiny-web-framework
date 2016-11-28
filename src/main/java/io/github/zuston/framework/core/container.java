@@ -1,6 +1,5 @@
 package io.github.zuston.framework.core;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -16,9 +15,18 @@ import java.util.Map;
 public class container {
     public static HashMap<String,Object> getAllParam(HttpServletRequest request){
         HashMap<String,Object> hs = new HashMap<String, Object>();
+//      放入基础request的请求所有信息
+        hs.put("request",request);
         Enumeration<String> names  = request.getParameterNames();
         while (names.hasMoreElements()){
             String name = names.nextElement();
+            if(name=="request"){
+                try {
+                    throw new Exception("hashmap key error");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             String value = request.getParameter(name);
             hs.put(name,value);
         }
