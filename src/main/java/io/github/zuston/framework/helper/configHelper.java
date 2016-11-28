@@ -13,4 +13,12 @@ public class configHelper {
         Properties prop = propertyUtil.loadProperty("Config.properties");
         return propertyUtil.getString(prop,"packageName");
     }
+
+    public static String viewPath(){
+        return "/WEB-INF/view/";
+    }
+
+    public static String defaultJSP() {
+        return "default.jsp";
+    }
 }

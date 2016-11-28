@@ -9,13 +9,18 @@ import java.util.HashMap;
 public class viewEntity {
 
     public String viewName;
-    public HashMap<String,Object> hs;
+    public HashMap<String,Object> hs = new HashMap<String, Object>();
     public viewEntity(String viewName) {
         this.viewName=viewName;
     }
 
     public viewEntity addModel(String key,Object value){
         hs.put(key,value);
+        return this;
+    }
+
+    public viewEntity addModel(HashMap<String,Object> hashMap){
+        hs.putAll(hashMap);
         return this;
     }
 

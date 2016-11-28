@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.service.loginService;
 import io.github.zuston.framework.annotation.action;
 import io.github.zuston.framework.annotation.controller;
 import io.github.zuston.framework.entity.viewEntity;
@@ -13,14 +14,10 @@ import java.util.HashMap;
 @controller
 public class loginCtl {
 
-    @action("get:/favicon.ico")
-    public void hello(HashMap<String,Object> hs){
-        System.out.println("hello world");
-    }
-
-    @action("get:/pull")
-    public viewEntity pull(HashMap<String,Object> hs){
-        HashMap<String,Object> h = new HashMap<String, Object>();
-        return new viewEntity("index.jsp");
+    @action("get:/login")
+    public viewEntity login(HashMap<String,Object> hs){
+        viewEntity ve = new viewEntity("index.jsp");
+        ve.addModel("name","zuston");
+        return new viewEntity("index.jsp").addModel("name","zuston");
     }
 }
