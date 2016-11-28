@@ -1,24 +1,34 @@
 package io.github.zuston.framework.orm;
 
 import com.mysql.jdbc.Connection;
+import io.github.zuston.framework.helper.configHelper;
 
+import java.lang.reflect.Field;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zuston on 16-11-28.
  */
- abstract public class baseOrm {
+ public class baseOrm {
     public static Connection conn = null;
+
+    public static String dbName = configHelper.dbName();
+    public static String dbUsername = configHelper.dbUsername();
+    public static String dbPassword = configHelper.dbPassword();
+
     private void getConn(){
         try {
             System.out.println("初始化连接");
-            String url="jdbc:mysql://localhost:3306/patent?user=root&password=shacha&characterEncoding=utf8";
+            String dbUrl = String.format("jdbc:mysql://localhost:3306/%s?user=%s&password=%s&characterEncoding=utf8",dbName,dbUsername,dbPassword);
             Class.forName("com.mysql.jdbc.Driver") ;
-            conn = (Connection) DriverManager.getConnection(url);
+            conn = (Connection) DriverManager.getConnection(dbUrl);
         } catch (SQLException e) {
             System.out.println("连接错误");
             e.printStackTrace();
@@ -92,6 +102,9 @@ import java.util.Map;
     }
 
     public Object one() throws Exception {
+        if(conn==null){
+            getConn();
+        }
         if(!sqlCondition.isEmpty()){
             String tableName = (String) sqlCondition.get("tableName");
             HashMap<String, Object> condition = (HashMap<String,Object>)sqlCondition.get("condition");
@@ -99,7 +112,7 @@ import java.util.Map;
                 throw new Exception("tableName error");
             }
             String baseSql = "select * from ";
-            baseSql += "company";
+            baseSql += tableName;
             baseSql += " where ";
             String conditionSql = "";
             if(condition!=null){
@@ -115,18 +128,94 @@ import java.util.Map;
             }
             sql += limitSql;
             System.out.println(sql);
-//            Statement sts =null;
-//            sts = conn.createStatement();
-//            ResultSet res = sts.executeQuery(sql);
-//            while (res.next()){
-//
-//            }
-            return null;
+            Statement sts = conn.createStatement();
+            ResultSet res = sts.executeQuery(sql);
+            // TODO: 16/11/28 生成一个对象模型
+            Object model = generateModel(tableName,res);
+            return model;
         }
         return null;
     }
 
-    public baseOrm all(){
-        return this;
+    public List<Object> all() throws Exception {
+        if(conn==null){
+            getConn();
+        }
+        if(!sqlCondition.isEmpty()){
+            String tableName = (String) sqlCondition.get("tableName");
+            HashMap<String, Object> condition = (HashMap<String,Object>)sqlCondition.get("condition");
+            if(tableName==null){
+                throw new Exception("tableName error");
+            }
+            String baseSql = "select * from ";
+            baseSql += tableName;
+            baseSql += " where ";
+            String conditionSql = "";
+            if(condition!=null){
+                for(Map.Entry<String,Object> mp:condition.entrySet()){
+                    conditionSql += ""+mp.getKey()+"='"+mp.getValue()+"' and ";
+                }
+            }
+            String sql = baseSql;
+            if(!conditionSql.equals("")){
+                String csql = conditionSql.substring(0,conditionSql.lastIndexOf("and"));
+                sql += csql;
+            }
+            Statement sts = conn.createStatement();
+            ResultSet res = sts.executeQuery(sql);
+            // TODO: 16/11/28 生成一个对象模型
+            List<Object> returnList = generateModels(tableName,res);
+            return returnList;
+        }
+        return null;
     }
+
+
+    private Object generateModel(String modelName,ResultSet res) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
+        while (res.next()){
+            String packageOrm = configHelper.packageOrm();
+
+            ClassLoader cls = Thread.currentThread().getContextClassLoader();
+            Class newModel = cls.loadClass(packageOrm+"."+modelName);
+            Object instance = newModel.newInstance();
+            for (Field field:this.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                Object value = null;
+                if (field.getType()==String.class){
+                    value = (String)res.getString(field.getName());
+                }else{
+                    value = (int)res.getInt(field.getName());
+                }
+                field.set(instance,value);
+            }
+            return instance;
+        }
+        return null;
+    }
+
+
+
+    private List<Object> generateModels(String modelName,ResultSet res) throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+        List<Object> container = new ArrayList<Object>();
+        String packageOrm = configHelper.packageOrm();
+        ClassLoader cls = Thread.currentThread().getContextClassLoader();
+        Class newModel = cls.loadClass(packageOrm+"."+modelName);
+        while (res.next()){
+            Object instance = newModel.newInstance();
+            for (Field field:this.getClass().getDeclaredFields()){
+                field.setAccessible(true);
+                Object value = null;
+                if (field.getType()==String.class){
+                    value = (String)res.getString(field.getName());
+                }else{
+                    value = (int)res.getInt(field.getName());
+                }
+                field.set(instance,value);
+            }
+            container.add(instance);
+        }
+        return container;
+    }
+
+
 }
