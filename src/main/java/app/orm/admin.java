@@ -3,7 +3,6 @@ package app.orm;
 import io.github.zuston.framework.orm.baseOrm;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by zuston on 16-11-28.
@@ -55,16 +54,18 @@ public class admin extends baseOrm {
 //        am.save();
         admin am = new admin();
         HashMap<String,Object> hs = new HashMap<String, Object>();
-//        hs.put("name","shacha");
-//        hs.put("permission","root");
+        hs.put("name","shacha");
+        hs.put("permission","root");
 //        admin ad = (admin) am.find().where(hs).one();
-//        System.out.println(ad.getPassword());
+        admin ad = (admin) am.find().one();
 
-        hs.put("1","1");
-        List<Object> adList = am.find().where(hs).all();
-        for (Object a:adList){
-            admin p = (admin)a;
-            System.out.println(p.getName());
-        }
+        System.out.println(ad.getPassword());
+
+//        hs.put("1","1");
+//        List<Object> adList = am.find().where(hs).all();
+//        for (Object a:adList){
+//            admin p = (admin)a;
+//            System.out.println(p.getName());
+//        }
     }
 }

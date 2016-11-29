@@ -25,15 +25,15 @@ import java.util.Map;
 
     private void getConn(){
         try {
-            System.out.println("初始化连接");
+            System.out.println("init the connection");
             String dbUrl = String.format("jdbc:mysql://localhost:3306/%s?user=%s&password=%s&characterEncoding=utf8",dbName,dbUsername,dbPassword);
             Class.forName("com.mysql.jdbc.Driver") ;
             conn = (Connection) DriverManager.getConnection(dbUrl);
         } catch (SQLException e) {
-            System.out.println("连接错误");
+            System.out.println("connection error");
             e.printStackTrace();
         } catch (ClassNotFoundException e){
-            System.out.println("找不到驱动");
+            System.out.println("can not find the jdbc driver");
             e.printStackTrace();
         }
     }
@@ -78,6 +78,8 @@ import java.util.Map;
 
 
     public static HashMap<String,Object> sqlCondition = new HashMap<String, Object>();
+
+
     public baseOrm find(){
         String tableName = this.getClass().getSimpleName();
         if (sqlCondition.isEmpty()){
@@ -91,83 +93,99 @@ import java.util.Map;
         return this;
     }
 
+    public baseOrm update(){
+        return this;
+    }
 
-    public baseOrm where(HashMap<String,Object> hs) throws Exception {
-        if (!sqlCondition.isEmpty()){
-            sqlCondition.put("condition",hs);
-            return this;
-        }else{
-            throw new Exception("condition error");
-        }
+    public baseOrm where(HashMap<String,Object> hs){
+        sqlCondition.put("condition",hs);
+        return this;
+    }
+
+    public baseOrm orderby(String tag){
+        sqlCondition.put("order",tag);
+        return this;
     }
 
     public Object one() throws Exception {
         if(conn==null){
             getConn();
         }
-        if(!sqlCondition.isEmpty()){
-            String tableName = (String) sqlCondition.get("tableName");
+        if(!sqlCondition.containsKey("tableName")){
+            throw new Exception("tableName error");
+        }
+        String tableName = (String) sqlCondition.get("tableName");
+        String baseSql = "select * from ";
+        baseSql += tableName;
+
+        String conditionSql = "";
+        if(sqlCondition.containsKey("condition")){
             HashMap<String, Object> condition = (HashMap<String,Object>)sqlCondition.get("condition");
-            if(tableName==null){
-                throw new Exception("tableName error");
-            }
-            String baseSql = "select * from ";
-            baseSql += tableName;
-            baseSql += " where ";
-            String conditionSql = "";
+            conditionSql = " where ";
             if(condition!=null){
                 for(Map.Entry<String,Object> mp:condition.entrySet()){
                     conditionSql += ""+mp.getKey()+"='"+mp.getValue()+"' and ";
                 }
             }
-            String limitSql = " limit 1";
-            String sql = baseSql;
-            if(!conditionSql.equals("")){
-                String csql = conditionSql.substring(0,conditionSql.lastIndexOf("and"));
-                sql += csql;
-            }
-            sql += limitSql;
-            System.out.println(sql);
-            Statement sts = conn.createStatement();
-            ResultSet res = sts.executeQuery(sql);
-            // TODO: 16/11/28 生成一个对象模型
-            Object model = generateModel(tableName,res);
-            return model;
         }
-        return null;
+        String orderSql = "";
+        if(sqlCondition.containsKey("order")){
+            String tag = (String) sqlCondition.get("order");
+            orderSql += " order by '" + tag +"'";
+        }
+        String limitSql = " limit 1";
+        String sql = baseSql;
+        if(!conditionSql.equals("")){
+            String csql = conditionSql.substring(0,conditionSql.lastIndexOf("and"));
+            sql += csql;
+        }
+        if(!orderSql.equals("")){
+            sql += orderSql;
+        }
+        sql += limitSql;
+        System.out.println(sql);
+        Statement sts = conn.createStatement();
+        ResultSet res = sts.executeQuery(sql);
+        // TODO: 16/11/28 生成一个对象模型
+        Object model = generateModel(tableName,res);
+        flush();
+        return model;
     }
 
     public List<Object> all() throws Exception {
         if(conn==null){
             getConn();
         }
-        if(!sqlCondition.isEmpty()){
-            String tableName = (String) sqlCondition.get("tableName");
+
+        if(!sqlCondition.containsKey("tableName")){
+            throw new Exception("tableName error");
+        }
+        String tableName = (String) sqlCondition.get("tableName");
+        String baseSql = "select * from ";
+        baseSql += tableName;
+
+        String conditionSql = "";
+        if(sqlCondition.containsKey("condition")){
             HashMap<String, Object> condition = (HashMap<String,Object>)sqlCondition.get("condition");
-            if(tableName==null){
-                throw new Exception("tableName error");
-            }
-            String baseSql = "select * from ";
-            baseSql += tableName;
-            baseSql += " where ";
-            String conditionSql = "";
+            conditionSql = " where ";
             if(condition!=null){
                 for(Map.Entry<String,Object> mp:condition.entrySet()){
                     conditionSql += ""+mp.getKey()+"='"+mp.getValue()+"' and ";
                 }
             }
-            String sql = baseSql;
-            if(!conditionSql.equals("")){
-                String csql = conditionSql.substring(0,conditionSql.lastIndexOf("and"));
-                sql += csql;
-            }
-            Statement sts = conn.createStatement();
-            ResultSet res = sts.executeQuery(sql);
-            // TODO: 16/11/28 生成一个对象模型
-            List<Object> returnList = generateModels(tableName,res);
-            return returnList;
         }
-        return null;
+        String sql = baseSql;
+        if(!conditionSql.equals("")){
+            String csql = conditionSql.substring(0,conditionSql.lastIndexOf("and"));
+            sql += csql;
+        }
+        System.out.println(sql);
+        Statement sts = conn.createStatement();
+        ResultSet res = sts.executeQuery(sql);
+        // TODO: 16/11/28 生成一个对象模型
+        List<Object> models = generateModels(tableName,res);
+        flush();
+        return models;
     }
 
 
@@ -215,6 +233,12 @@ import java.util.Map;
             container.add(instance);
         }
         return container;
+    }
+
+    // every action must flush the condition hashmap,avoid influencing the next query action
+    private boolean flush(){
+        sqlCondition = new HashMap<String, Object>();
+        return true;
     }
 
 
