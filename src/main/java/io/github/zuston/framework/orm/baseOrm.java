@@ -1,6 +1,7 @@
 package io.github.zuston.framework.orm;
 
 import com.mysql.jdbc.Connection;
+import com.sun.tools.javac.comp.Todo;
 import io.github.zuston.framework.helper.configHelper;
 
 import java.lang.reflect.Field;
@@ -93,9 +94,37 @@ import java.util.Map;
         return this;
     }
 
+    // TODO: 16/11/30 update实现
     public baseOrm update(){
+        String url = "update tablename set id = 10 where name=";
+        if(conn==null){
+            getConn();
+        }
+        String tableName = this.getClass().getSimpleName();
+        for (Field field:this.getClass().getDeclaredFields()){
+
+        }
         return this;
     }
+
+    public List<Object> findBySql(String sql){
+        return null;
+    }
+
+
+
+    public boolean delete(){
+        return false;
+    }
+
+    public boolean deleteAll(){
+        return false;
+    }
+
+    public boolean deleteOne(){
+        return false;
+    }
+
 
     public baseOrm where(HashMap<String,Object> hs){
         sqlCondition.put("condition",hs);
@@ -240,6 +269,4 @@ import java.util.Map;
         sqlCondition = new HashMap<String, Object>();
         return true;
     }
-
-
 }

@@ -24,7 +24,7 @@ public class configHelper {
     }
 
     public static String defaultJSP() {
-        return "default.jsp";
+        return "login.jsp";
     }
 
 
