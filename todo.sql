@@ -37,13 +37,21 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE `thing` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content` varchar(1000) DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
 INSERT INTO `user` (`id`, `name`, `nick_name`, `pwd`, `grade`, `sex`, `teacher`, `background`)
 VALUES
-	(1,'张俊帆','shacha','shacha',2016,1,'朱文浩',NULL),
-	(2,'刘懿婷','lyt','lyt',2015,0,'朱文浩',NULL);
+	(1,'张俊帆','shacha','shacha',2016,1,'朱文浩',2),
+	(2,'刘懿婷','lyt','lyt',2015,0,'朱文浩',1);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;

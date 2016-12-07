@@ -10,6 +10,9 @@
     <meta name="author" content="">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://www.bootcss.com/p/buttons/css/buttons.css">
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
@@ -63,12 +66,12 @@
         <h2 class="form-signin-heading">TODO</h2>
         <input type="username" class="form-control" placeholder="Username" required autofocus name="username">
         <input type="password" class="form-control" placeholder="Password" required name="pwd">
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <%--<div class="checkbox">--%>
+            <%--<label>--%>
+                <%--<input type="checkbox" value="remember-me"> Remember me--%>
+            <%--</label>--%>
+        <%--</div>--%>
+        <button class="button button-primary button-rounded button-small" type="submit">GO</button>
     </form>
 
 </div> <!-- /container -->

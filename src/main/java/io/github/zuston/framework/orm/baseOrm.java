@@ -1,7 +1,6 @@
 package io.github.zuston.framework.orm;
 
 import com.mysql.jdbc.Connection;
-import com.sun.tools.javac.comp.Todo;
 import io.github.zuston.framework.helper.configHelper;
 
 import java.lang.reflect.Field;
@@ -90,6 +89,8 @@ import java.util.Map;
         return this;
     }
 
+
+
     public baseOrm findOne(){
         return this;
     }
@@ -107,8 +108,13 @@ import java.util.Map;
         return this;
     }
 
-    public List<Object> findBySql(String sql){
-        return null;
+    public ResultSet findBySql(String sql) throws SQLException {
+        if(conn==null){
+            getConn();
+        }
+        Statement sts = conn.createStatement();
+        ResultSet res = sts.executeQuery(sql);
+        return res;
     }
 
 

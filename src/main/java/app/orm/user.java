@@ -29,5 +29,36 @@ public class user extends baseOrm {
     public user() {
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public int getBackground() {
+        return background;
+    }
+
+    public String getName(){
+        return this.name;
+    }
 
 }
