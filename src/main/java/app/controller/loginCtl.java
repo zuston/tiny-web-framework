@@ -74,7 +74,7 @@ public class loginCtl {
     public viewEntity show(HashMap<String,Object> hs) throws Exception {
         user currentUser = (user) hs.get("currentUser");
         user res = new user();
-        List<Object> personList = res.find().all();
+        List<user> personList = res.find().all();
 
 //        分组查询todo列表
         String sql = "select * from (select * from thing order by time desc) as a group by userId";

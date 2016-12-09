@@ -29,4 +29,9 @@ public class thing extends baseOrm {
         return content;
     }
 
+    public static void main(String[] args) throws Exception {
+        thing tg = new thing();
+        thing res = tg.find().one();
+        System.out.println(res.getUserId());
+    }
 }

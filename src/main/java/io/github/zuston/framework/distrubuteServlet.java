@@ -5,6 +5,7 @@ import io.github.zuston.framework.entity.handlerEntity;
 import io.github.zuston.framework.entity.jsonEntity;
 import io.github.zuston.framework.entity.requestEntity;
 import io.github.zuston.framework.entity.viewEntity;
+import io.github.zuston.framework.helper.beanHelper;
 import io.github.zuston.framework.helper.configHelper;
 import io.github.zuston.framework.helper.coreHelper;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -44,9 +46,16 @@ public class distrubuteServlet extends HttpServlet {
         if(handler!=null){
             Class handlerClass = handler.getHandlerClass();
             Method handlerMethod = handler.getHandlerMethod();
-            Object res = bootstrap.reflection(handlerClass,handlerMethod,container.getAllParam(req));
+            Object res = null;
+            try {
+                res = bootstrap.reflection(beanHelper.get(handlerClass),handlerMethod, container.getAllParam(req));
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
 
-            if(res.getClass()==viewEntity.class){
+            if(res instanceof viewEntity){
                 viewEntity view = (viewEntity)res;
                 HashMap<String,Object> pageHM = view.getModel();
                 String viewName = view.getView();
@@ -54,8 +63,10 @@ public class distrubuteServlet extends HttpServlet {
                 req.getRequestDispatcher(viewPath+viewName).forward(req,resp);
             }
 
-            if(res.getClass()==jsonEntity.class){
+            if(res instanceof jsonEntity){
                 // TODO: 16-11-28 增加json数据的处理
+                jsonEntity json = (jsonEntity) res;
+                HashMap<String,Object> hm = json.getModel();
                 req.getRequestDispatcher(viewPath+defaultJSP).forward(req,resp);
             }
         }else{

@@ -142,7 +142,7 @@ import java.util.Map;
         return this;
     }
 
-    public Object one() throws Exception {
+    public <T> T one() throws Exception {
         if(conn==null){
             getConn();
         }
@@ -184,10 +184,10 @@ import java.util.Map;
         // TODO: 16/11/28 生成一个对象模型
         Object model = generateModel(tableName,res);
         flush();
-        return model;
+        return (T)model;
     }
 
-    public List<Object> all() throws Exception {
+    public <T> List<T> all() throws Exception {
         if(conn==null){
             getConn();
         }
@@ -220,7 +220,7 @@ import java.util.Map;
         // TODO: 16/11/28 生成一个对象模型
         List<Object> models = generateModels(tableName,res);
         flush();
-        return models;
+        return (List<T>) models;
     }
 
 

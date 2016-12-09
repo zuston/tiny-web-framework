@@ -6,7 +6,6 @@ import io.github.zuston.framework.entity.requestEntity;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,6 +15,7 @@ public class coreHelper {
 
 
     public static HashMap<requestEntity,handlerEntity> coreMap = new HashMap<requestEntity, handlerEntity>();
+
     static{
         Set<Class<?>> controllerClass = classHelper.getAllControllerClass();
         for (Class oneClass:controllerClass){
@@ -45,4 +45,7 @@ public class coreHelper {
         }
         return handler;
     }
+
+
+
 }

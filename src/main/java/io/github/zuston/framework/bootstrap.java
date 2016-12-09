@@ -1,8 +1,6 @@
 package io.github.zuston.framework;
 
-import io.github.zuston.framework.helper.classHelper;
-import io.github.zuston.framework.helper.configHelper;
-import io.github.zuston.framework.helper.coreHelper;
+import io.github.zuston.framework.helper.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,32 +12,28 @@ import java.util.HashMap;
 public class bootstrap {
     public static void init(){
         Class [] allInitClass = {
+                aopHelper.class,
                 classHelper.class,
                 configHelper.class,
-                coreHelper.class
+                coreHelper.class,
+                beanHelper.class,
         };
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         for (Class oneClass:allInitClass){
             try {
-                cl.loadClass(oneClass.getName());
+                //强制实例化static
+                Class.forName(oneClass.getName(),true,cl);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static Object reflection(Class oneClass, Method method, HashMap<String,Object> hs){
+    public static Object reflection(Object obj, Method method, HashMap<String,Object> hs) throws InvocationTargetException, IllegalAccessException {
         Object result = null;
-        try {
-            Object instance = oneClass.newInstance();
-            result = method.invoke(instance,hs);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+
+        result = method.invoke(obj,hs);
+
         return result;
     }
 }
