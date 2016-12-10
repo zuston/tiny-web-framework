@@ -2,9 +2,9 @@ package io.github.zuston.framework.orm;
 
 import com.mysql.jdbc.Connection;
 import io.github.zuston.framework.helper.configHelper;
+import io.github.zuston.framework.util.dbUtil;
 
 import java.lang.reflect.Field;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,23 +19,8 @@ import java.util.Map;
  public class baseOrm {
     public static Connection conn = null;
 
-    public static String dbName = configHelper.dbName();
-    public static String dbUsername = configHelper.dbUsername();
-    public static String dbPassword = configHelper.dbPassword();
-
     private void getConn(){
-        try {
-            System.out.println("init the connection");
-            String dbUrl = String.format("jdbc:mysql://localhost:3306/%s?user=%s&password=%s&characterEncoding=utf8",dbName,dbUsername,dbPassword);
-            Class.forName("com.mysql.jdbc.Driver") ;
-            conn = (Connection) DriverManager.getConnection(dbUrl);
-        } catch (SQLException e) {
-            System.out.println("connection error");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e){
-            System.out.println("can not find the jdbc driver");
-            e.printStackTrace();
-        }
+        conn = new dbUtil().getInstance();
     }
     public boolean save() throws IllegalAccessException {
         if(conn==null){

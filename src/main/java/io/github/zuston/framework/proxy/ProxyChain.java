@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class ProxyChain {
 
-    private final Class<?> targetClass;
-    private final Object targetObject;
-    private final Method targetMethod;
-    private final MethodProxy methodProxy;
-    private final Object[] methodParams;
+    private  Class<?> targetClass;
+    private  Object targetObject;
+    private  Method targetMethod;
+    private  MethodProxy methodProxy;
+    private  Object[] methodParams;
 
     private List<Proxy> proxyList = new ArrayList<Proxy>();
 

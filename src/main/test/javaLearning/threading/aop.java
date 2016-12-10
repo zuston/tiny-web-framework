@@ -1,9 +1,5 @@
 package javaLearning.threading;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -14,19 +10,10 @@ import java.lang.reflect.Proxy;
 public class aop {
 
     public static void main(String[] args) {
+        //此处输出也会有before和after，怀疑是sout调用了tostring,事实证明是的
+        System.out.println(new proxy(new helloImpl()).getProxy());
         hello action = new proxy(new helloImpl()).getProxy();
         action.say();
-
-        hello cglibAction = (hello) Enhancer.create(helloImpl.class, new MethodInterceptor() {
-            @Override
-            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-                System.out.println("start");
-                Object res = methodProxy.invokeSuper(o,objects);
-                System.out.println("end");
-                return res;
-            }
-        });
-        cglibAction.say();
     }
 }
 
@@ -37,8 +24,17 @@ interface hello{
 
 
 class helloImpl implements hello{
+    public helloImpl(){
+        System.out.println("init the instance");
+    }
     public void say(){
         System.out.println("hello!");
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("tostring invoke");
+        return super.toString();
     }
 }
 
@@ -64,21 +60,6 @@ class proxy implements InvocationHandler{
                 oj.getClass().getInterfaces(),
                 this
         );
-    }
-}
-
-
-class cglibProxy implements MethodInterceptor{
-
-    public <T> T getProxy(Class<T> cls){
-        return (T) Enhancer.create(cls,this);
-    }
-
-    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-        System.out.println("cglib before");
-        Object res = methodProxy.invokeSuper(o, objects);
-        System.out.println("cglib after");
-        return res;
     }
 }
 
